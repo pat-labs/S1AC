@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  java_app:
+    container_name: ${APP_HOST:-inventory}
+    image: pee-java_app:1.0.0
+    build: .
+    volumes:
+      - ./target/${APP_HOST:-inventory}-0.0.1-SNAPSHOT.jar:/app/app.jar
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+    env_file:
+      - ./.env
+    networks:
+      - public
+
+networks:
+  public:
+    external: true
