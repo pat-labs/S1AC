@@ -1,13 +1,12 @@
 package com.pat.inventory.infrastructure.rest.route;
 
 import com.pat.inventory.application.usecase.product.ProductUseCase;
-import com.pat.inventory.application.usecase.product.SnowflakeIdGenerator;
-import com.pat.inventory.domain.entities.Product;
+import com.pat.inventory.application.shared.util.SnowflakeIdGenerator;
+import com.pat.inventory.domain.factory.Product;
 import com.pat.inventory.domain.shared.exceptions.DomainException;
-import com.pat.inventory.infrastructure.mypostgres.ProductRepository;
-import com.pat.inventory.infrastructure.myrabbitmq.RabbitmqProducer;
 import com.pat.inventory.infrastructure.rest.dto.ProductRequest;
-import com.pat.inventory.infrastructure.shared.exceptions.InfrastructureException;
+import com.pat.inventory.infrastructure.shared.error.InfrastructureException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +24,12 @@ import java.util.Optional;
 @RequestMapping("/product")
 public class ProductRoute {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private final ProductRepository productRepository;
-    private final RabbitmqProducer rabbitmqProducer;
+    private final ProductDao productDao;
+    private final BrokerProducer brokerProducer;
 
-    public ProductRoute(ProductRepository productRepository, RabbitmqProducer rabbitmqProducer) {
-        this.productRepository = productRepository;
-        this.rabbitmqProducer = rabbitmqProducer;
+    public ProductRoute(ProductDao productDao, BrokerProducer brokerProducer) {
+        this.productDao = productDao;
+        this.brokerProducer = brokerProducer;
     }
 
     @GetMapping("/id_strategy")
@@ -52,7 +51,7 @@ public class ProductRoute {
     @GetMapping
     public ResponseEntity<List<Product>> getAllProducts(HttpServletRequest request) {
         String writeUId = request.getHeader("writeUId");
-        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productRepository, this.rabbitmqProducer);
+        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productDao, this.brokerProducer);
 
         try {
             List<Product> products = productUseCase.findAll();
@@ -70,7 +69,7 @@ public class ProductRoute {
     @GetMapping("/{identifier}")
     public ResponseEntity<Product> getProductById(HttpServletRequest request, @PathVariable String identifier) {
         String writeUId = request.getHeader("writeUId");
-        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productRepository, this.rabbitmqProducer);
+        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productDao, this.brokerProducer);
 
         try {
             Optional<Product> optionalProduct = productUseCase.findById(identifier);
@@ -85,7 +84,7 @@ public class ProductRoute {
     @DeleteMapping("/{identifier}")
     public ResponseEntity<Void> deleteProduct(HttpServletRequest request, @PathVariable String identifier) {
         String writeUId = request.getHeader("writeUId");
-        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productRepository, this.rabbitmqProducer);
+        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productDao, this.brokerProducer);
 
         try {
             productUseCase.delete(identifier);
@@ -100,7 +99,7 @@ public class ProductRoute {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Void> newProduct(HttpServletRequest request, @RequestBody ProductRequest productRequest) {
         String writeUId = request.getHeader("writeUId");
-        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productRepository, this.rabbitmqProducer);
+        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productDao, this.brokerProducer);
 
         try {
             Product product = Product.create(
@@ -119,7 +118,7 @@ public class ProductRoute {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Void> updateProduct(HttpServletRequest request, @PathVariable String identifier, @RequestBody ProductRequest productRequest) {
         String writeUId = request.getHeader("writeUId");
-        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productRepository, this.rabbitmqProducer);
+        ProductUseCase productUseCase = new ProductUseCase(writeUId, this.productDao, this.brokerProducer);
 
         try {
             Product product = Product.existing(

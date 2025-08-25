@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Load variables from .env file
+# source .env
+
+getIDStrategy() {
+    curl -X GET "$URL/product/id_strategy" \
+        --header 'writeUId: $1'
+}
+
+getProduct() {
+    curl -X GET "$URL/product" \
+        --header 'writeUId: $1'
+}
+
+getProductById() {
+    curl -X GET "$URL/product/$1" \
+        --header 'writeUId: $1'
+}
+
+deleteProduct() {
+    curl -X DELETE "$URL/product/$1" \
+        --header 'writeUId: $1'
+}
+
+createProduct() {
+    uuid=$1
+    curl -X POST "$URL/product" \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        --header 'writeUId: $1' \
+        -d '{
+            "productId":"'"$uuid"'",
+            "description":"thermos",
+            "status":1
+        }'
+}
+
+updateProduct() {
+    curl -X POST "$URL/product/$1" \
+        --header 'Content-Type: application/json' \
+        --header 'Accept: application/json' \
+        --header 'writeUId: $1' \
+        -d '{
+            "status": 0
+        }'
+}
+
+# Variables
+URL="http://localhost:8080"
+UUID='10765432100123456789'
+
+# Testing all functions
+# echo "Testing hello()"
+# hello
+
+# echo "Testing createProduct()"
+# createProduct "$UUID"
+
+# echo "Testing getProduct()"
+# getProduct "$UUID"
+
+echo "Testing updateProduct()"
+updateProduct "$UUID"
+
+# echo "Testing getProductById()"
+# getProductById "$UUID"
+
+# echo "Testing deleteProduct()"
+# deleteProduct "$UUID"
+

@@ -1,13 +1,14 @@
 package com.pat.inventory.infrastructure.myrabbitmq;
 
-import com.pat.inventory.application.shared.Broker;
-import com.pat.inventory.infrastructure.shared.exceptions.InfrastructureException;
-import com.pat.inventory.infrastructure.shared.exceptions.InfrastructureExceptionCauses;
+import com.pat.inventory.application.shared.BrokerProducer;
+import com.pat.inventory.infrastructure.shared.error.InfrastructureException;
+import com.pat.inventory.infrastructure.shared.error.InfrastructureExceptionCauses;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RabbitmqProducer implements Broker {
+public class RabbitmqProducer implements BrokerProducer {
     private final RabbitTemplate rabbitTemplate;
 
     public RabbitmqProducer(RabbitTemplate rabbitTemplate) {

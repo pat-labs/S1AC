@@ -1,11 +1,12 @@
 package com.pat.inventory.infrastructure.mypostgres;
 
 import com.pat.inventory.application.shared.dao.ProductDao;
-import com.pat.inventory.application.usecase.product.ProductRowMapper;
-import com.pat.inventory.domain.entities.Product;
-import com.pat.inventory.domain.shared.utils.StringHandler;
-import com.pat.inventory.infrastructure.shared.exceptions.InfrastructureException;
-import com.pat.inventory.infrastructure.shared.exceptions.InfrastructureExceptionCauses;
+import com.pat.inventory.infrastructure.mypostgres.mapper.ProductRowMapper;
+import com.pat.inventory.infrastructure.shared.error.InfrastructureException;
+import com.pat.inventory.infrastructure.shared.error.InfrastructureExceptionCauses;
+import com.pat.inventory.domain.factory.Product;
+import com.pat.inventory.domain.shared.util.StringHandler;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class ProductRepository implements ProductDao {
     }
 
     @Override
-    public List<Product> findAll() throws InfrastructureException {
+    public List<Product> findAll() {
         String sqlQuery = "SELECT product_id, description, status_value FROM product";
         try {
             return this.jdbcTemplate.query(sqlQuery, new ProductRowMapper());
@@ -43,7 +44,7 @@ public class ProductRepository implements ProductDao {
     }
 
     @Override
-    public Optional<Product> findById(String identifier) throws InfrastructureException {
+    public Optional<Product> findById(String identifier) {
         if (StringHandler.isNullOrEmpty(identifier)) {
             throw new InfrastructureException(InfrastructureExceptionCauses.ilegalArgument("productId", identifier));
         }
@@ -65,7 +66,7 @@ public class ProductRepository implements ProductDao {
     }
 
     @Override
-    public void deleteById(String identifier) throws InfrastructureException {
+    public void deleteById(String identifier) {
         if (StringHandler.isNullOrEmpty(identifier)) {
             throw new InfrastructureException(InfrastructureExceptionCauses.ilegalArgument("productId", identifier));
         }
@@ -80,7 +81,7 @@ public class ProductRepository implements ProductDao {
     }
 
     @Override
-    public void create(Product product) throws InfrastructureException {
+    public void create(Product product) {
         String sqlQuery = "INSERT INTO product (product_id, description, status_value) VALUES (:product_id, :description, :status_value)";
         this.paramSource.addValue("product_id", product.getProductId());
         this.paramSource.addValue("description", product.getDescription());
@@ -94,7 +95,7 @@ public class ProductRepository implements ProductDao {
 
     }
 
-    public void update(Product product) throws InfrastructureException {
+    public void update(Product product) {
         StringBuilder setClause = new StringBuilder();
         if (product.getDescription() != null) {
             setClause.append("description = :description, ");

@@ -1,19 +1,51 @@
 version: "3.9"
 
 services:
+  # Java Application Service
   java_app:
-    container_name: ${APP_HOST:-inventory}
-    image: pee-java_app:1.0.0
-    build: .
-    volumes:
-      - ./target/${APP_HOST:-inventory}-0.0.1-SNAPSHOT.jar:/app/app.jar
+    container_name: ${APP_HOST:-inventory} # Uses APP_HOST from .env, defaults to 'inventory'
+    # The image will be built from the current directory using the Dockerfile
+    image: pee-java_app:${APP_VERSION:-1.0.0} # Uses APP_VERSION from .env, defaults to '1.0.0'
+    build: . # Build context is the current directory, where the Dockerfile should be
     ports:
-      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}" # Maps host port to container port for the Java app
     env_file:
-      - ./.env
+      - ./.env # Loads environment variables from the .env file
+    depends_on:
+      - postgres_db # Ensures PostgreSQL is up before the Java app starts
+      - rabbitmq_broker # Ensures RabbitMQ is up before the Java app starts
     networks:
-      - public
+      - public # Connects to the 'public' network
 
+  # PostgreSQL Database Service
+  postgres_db:
+    container_name: ${POSTGRES_HOST:-postgres_db} # Uses POSTGRES_HOST from .env, defaults to 'postgres_db'
+    image: postgres:16 # Using a recent, stable PostgreSQL version
+    ports:
+      - "${POSTGRES_PORT:-5432}:${POSTGRES_PORT:-5432}" # Maps host port to container port for PostgreSQL
+    env_file:
+      - ./.env # Loads environment variables for PostgreSQL from the .env file
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persists PostgreSQL data
+    networks:
+      - public # Connects to the 'public' network
+
+  # RabbitMQ Message Broker Service
+  rabbitmq_broker:
+    container_name: ${RABBITMQ_HOST:-rabbitmq_broker} # Uses RABBITMQ_HOST from .env, defaults to 'rabbitmq_broker'
+    image: rabbitmq:3-management # Includes the RabbitMQ management UI
+    ports:
+      - "${RABBITMQ_PORT:-5672}:${RABBITMQ_PORT:-5672}" # Maps host port to container port for RabbitMQ client connections
+      - "15672:15672" # Maps host port to container port for RabbitMQ Management UI
+    env_file:
+      - ./.env # Loads environment variables for RabbitMQ from the .env file
+    networks:
+      - public # Connects to the 'public' network
+
+# Define networks and volumes
 networks:
   public:
-    external: true
+    external: true # Assumes 'public' network already exists or will be created manually
+
+volumes:
+  postgres_data: # Declares a named volume for PostgreSQL data persistence

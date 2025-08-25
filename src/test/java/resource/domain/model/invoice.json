@@ -1,0 +1,37 @@
+{
+  "document_type": "BOLETA DE VENTA ELECTRONICA",
+  "invoice_id": "B006-0067784",
+  "issue_date": "25/07/2025",
+  "issue_time": "20:19:32",
+  "company": {
+    "name": "GRIFO J.H.P F.I.R.LTDA.",
+    "ruc": "20370508659",
+    "address": "AV. AVIACION NRO. 9 (CARRETERA A YURA) CERRO COLORADO - AREQUIPA URB. INDUSTRIAL CAYRO MZ D LOTE 3",
+    "branch_office": "PAUCARPATA"
+  },
+  "seller": "VENTAS",
+  "client": {
+    "name": "FUENTES CARPIO PATRICK ALONSO",
+    "dni": "72539151"
+  },
+  "items": [
+    {
+      "description": "GASOHOL PREMIU",
+      "quantity": 6.142,
+      "unit_of_measure": "lt",
+      "unit_price": 14.78,
+      "total_price": 90.78
+    }
+  ],
+  "payment_details": {
+    "method": "CONTADO",
+    "subtotal": 76.93,
+    "igv": {
+      "percentage": 18.00,
+      "amount": 13.85
+    },
+    "total_amount": 90.78,
+    "paid_amount": 90.78,
+    "currency": "SOLES"
+  }
+}
