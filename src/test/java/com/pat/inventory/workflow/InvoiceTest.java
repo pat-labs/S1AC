@@ -1,6 +1,6 @@
 package com.pat.inventory.workflow;
 
-public class InvoiceTest {
+public class  'InvoiceTest {
     private Map<String, Object> invoiceResponse;
 
     @BeforeEach
@@ -10,6 +10,4 @@ public class InvoiceTest {
         ObjectMapper objectMapper = new ObjectMapper();
         invoiceResponse = objectMapper.readValue(jsonContent, Map.class);
     }
-
-    public void 
 }
