@@ -1,12 +1,12 @@
 package com.pat.s1ac.domain.model;
 
-public record Item(
+import com.pat.s1ac.domain.model.util.Money;
+
+public record InvoiceItem(
     String item_id,
-    String description,
-    int quantity,
-    int unit,
-    int unit_price_currency,
-    double unit_price,
-    int total_price_currency,
-    double total_price
+    String product_id,
+    double quantity,
+    int unit_enum,
+    Money unit_price,
+    Money total_price
 ) {}

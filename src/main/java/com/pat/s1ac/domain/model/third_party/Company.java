@@ -1,4 +1,4 @@
-package com.pat.s1ac.domain.model;
+package com.pat.s1ac.domain.model.third_party;
 
 public record Company(
     String company_id,

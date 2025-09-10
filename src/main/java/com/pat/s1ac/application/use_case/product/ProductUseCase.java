@@ -1,9 +1,8 @@
-package com.pat.s1ac.application.usecase.product;
+package com.pat.s1ac.application.use_case.product;
 
 import com.pat.s1ac.application.shared.BrokerProducer;
 import com.pat.s1ac.application.shared.dao.ProductDao;
 import com.pat.s1ac.domain.factory.Product;
-import com.pat.inventory.infrastructure.shared.error.InfrastructureException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

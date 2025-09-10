@@ -1,6 +1,6 @@
 package com.pat.s1ac.infrastructure.rest.route;
 
-import com.pat.s1ac.application.usecase.product.ProductUseCase;
+import com.pat.s1ac.application.use_case.product.ProductUseCase;
 import com.pat.s1ac.application.shared.util.SnowflakeIdGenerator;
 import com.pat.s1ac.domain.factory.Product;
 import com.pat.inventory.domain.shared.exceptions.DomainException;
