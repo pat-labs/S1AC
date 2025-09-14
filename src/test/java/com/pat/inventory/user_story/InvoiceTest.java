@@ -2,10 +2,6 @@ package com.pat.inventory.user_story;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pat.s1ac.application.entity.AuditEntity;
-import com.pat.s1ac.application.entity.InvoiceEntity;
-import com.pat.s1ac.application.entity.InvoiceItemEntity;
-import com.pat.s1ac.application.entity.InvoicePaymentDetailEntity;
 import com.pat.s1ac.application.use_case.InvoiceUseCase;
 import com.pat.s1ac.domain.model.Invoice;
 import com.pat.s1ac.domain.model.InvoiceItem;
@@ -50,10 +46,10 @@ public class  InvoiceTest {
     private ProductService productService;
     private PersonService personService;
     private CompanyService companyService;
-    private Audit auditRequest;
-    private Invoice invoiceRequest;
-    private List<InvoiceItem> invoiceItemsRequest;
-    private InvoicePaymentDetail invoicePaymentDetailRequest;
+    private Audit audit;
+    private Invoice invoice;
+    private List<InvoiceItem> invoiceItems;
+    private InvoicePaymentDetail invoicePaymentDetail;
     private InvoiceItemValidator invoiceItemValidator;
     private InvoicePaymentDetailValidator invoicePaymentDetailValidator;
     private InvoiceValidator invoiceValidator;
@@ -88,17 +84,22 @@ public class  InvoiceTest {
         myRabbitmq = new MyRabbitmq(bootstrap.rabbitMQConfig());
         invoiceRabbitMQ = new InvoiceRabbitMQ(myRabbitmq);
 
-        invoiceUseCase = new InvoiceUseCase(invoiceRepository, invoiceRabbitMQ);
+        invoiceUseCase = new InvoiceUseCase(auditValidator,
+                invoiceValidator,
+                invoiceItemValidator,
+                invoicePaymentDetailValidator,
+                invoiceRepository,
+                invoiceRabbitMQ);
 
         ObjectMapper objectMapper = new ObjectMapper();
         String auditJson = new String(Files.readAllBytes(Paths.get("src/test/resources/audit.json")));
-        auditRequest = objectMapper.readValue(auditJson, Audit.class);
+        audit = objectMapper.readValue(auditJson, Audit.class);
         String invoiceJson = new String(Files.readAllBytes(Paths.get("src/test/resources/invoice.json")));
-        invoiceRequest = objectMapper.readValue(invoiceJson, Invoice.class);
+        invoice = objectMapper.readValue(invoiceJson, Invoice.class);
         String invoiceItemsJson = new String(Files.readAllBytes(Paths.get("src/test/resources/invoice_items.json")));
-        invoiceItemsRequest = objectMapper.readValue(invoiceItemsJson, List.class);
+        invoiceItems = objectMapper.readValue(invoiceItemsJson, List.class);
         String invoicePaymentDetailsJson = new String(Files.readAllBytes(Paths.get("src/test/resources/invoice_payment_details.json")));
-        invoicePaymentDetailRequest = objectMapper.readValue(invoicePaymentDetailsJson, InvoicePaymentDetail.class);
+        invoicePaymentDetail = objectMapper.readValue(invoicePaymentDetailsJson, InvoicePaymentDetail.class);
     }
 
     public void main() throws IOException, TimeoutException {
@@ -110,46 +111,19 @@ public class  InvoiceTest {
     }
 
     public boolean createInvoice(){
-        var auditEntity = new AuditEntity(
-                auditValidator,
-                auditRequest
-        );
-        
-        List<InvoiceItemEntity> invoiceItemsEntity = new ArrayList<>();
-        for (InvoiceItem item : invoiceItemsRequest) {
-            var invoiceItemEntity = new InvoiceItemEntity(
-                    invoiceItemValidator,
-                    item
-            );
-            invoiceItemsEntity.add(invoiceItemEntity);
-        }
-
-        var invoicePaymentDetailEntity = new InvoicePaymentDetailEntity(
-                invoicePaymentDetailValidator,
-                invoicePaymentDetailRequest
-        );
-        var invoiceEntity = new InvoiceEntity(
-                invoiceValidator,
-                invoiceRequest
-            );
-
-        return invoiceUseCase.create(auditEntity, invoiceEntity, invoiceItemsEntity, invoicePaymentDetailEntity);
-    }
-
-    public List<InvoiceEntity> fetchInvoice(){
-        return invoiceUseCase.fetch();
+        return invoiceUseCase.create(audit, invoice, invoiceItems, invoicePaymentDetail);
     }
 
     public boolean updateInvoice(){
-        var invoiceEntity = InvoiceEntity.update(
-                invoiceValidator,
-                invoiceRequest
-            );
-        return invoiceUseCase.update(invoiceEntity);
+        return invoiceUseCase.update(audit, invoice);
     }
 
-    public InvoiceEntity fetchInvoiceById(){
-        invoiceValidator.validateInvoiceId(invoiceRequest.invoice_id());
-        return invoiceUseCase.fetchById(invoiceRequest.invoice_id());
+    public List<Invoice> fetchInvoice(){
+        return invoiceUseCase.fetch();
+    }
+
+    public Invoice fetchInvoiceById(){
+        invoiceValidator.validateInvoiceId(invoice.invoice_id());
+        return invoiceUseCase.fetchById(invoice.invoice_id());
     }
 }

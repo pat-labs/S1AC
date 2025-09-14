@@ -2,10 +2,10 @@ package com.pat.s1ac.infrastructure.mymongo.use_case;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.result.InsertOneResult;
-import com.pat.s1ac.application.entity.AuditEntity;
-import com.pat.s1ac.application.entity.InvoiceEntity;
-import com.pat.s1ac.application.entity.InvoiceItemEntity;
-import com.pat.s1ac.application.entity.InvoicePaymentDetailEntity;
+import com.pat.s1ac.domain.model.Invoice;
+import com.pat.s1ac.domain.model.InvoiceItem;
+import com.pat.s1ac.domain.model.InvoicePaymentDetail;
+import com.pat.s1ac.domain.model.util.Audit;
 import com.pat.s1ac.domain.repository.IInvoiceRepository;
 import com.pat.s1ac.infrastructure.mymongo.MyMongo;
 import org.bson.Document;
@@ -30,7 +30,7 @@ public class InvoiceMongo implements IInvoiceRepository {
     }
 
     @Override
-    public boolean create(AuditEntity audit, InvoiceEntity invoice, List<InvoiceItemEntity> items, InvoicePaymentDetailEntity paymentDetail) {
+    public boolean create(Audit audit, Invoice invoice, List<InvoiceItem> items, InvoicePaymentDetail paymentDetail) {
         Document invoiceDoc = new Document();
         invoiceDoc.put("_id", invoice.invoice_id());
 
@@ -69,16 +69,16 @@ public class InvoiceMongo implements IInvoiceRepository {
     }
 
     @Override
-    public List<InvoiceEntity> fetch() {
-        // NOTE: This is a stub implementation. The current design with entity wrappers
-        // makes it impossible to reconstruct InvoiceEntity objects from the database
+    public List<Invoice> fetch() {
+        // NOTE: This is a stub implementation. The current design with  wrappers
+        // makes it impossible to reconstruct Invoice objects from the database
         // without access to their validators. This indicates a design issue that
         // should be addressed, perhaps by using DTOs for database transfer.
         return Collections.emptyList();
     }
 
     @Override
-    public boolean update(InvoiceEntity invoiceEntity) {
+    public boolean update(Audit audit, Invoice invoice, List<InvoiceItem> items, InvoicePaymentDetail paymentDetail) {
         // NOTE: This is a stub implementation. A proper implementation would require
         // either a more complex update logic (using $set) or a way to reconstruct
         // the full document with all its nested parts, which is not straightforward
@@ -87,9 +87,9 @@ public class InvoiceMongo implements IInvoiceRepository {
     }
 
     @Override
-    public InvoiceEntity fetchById(String invoiceId) {
+    public Invoice fetchById(String invoiceId) {
         // NOTE: This is a stub implementation for the same reasons as fetch().
-        // It's not possible to correctly reconstruct an InvoiceEntity.
+        // It's not possible to correctly reconstruct an Invoice.
         return null;
     }
 

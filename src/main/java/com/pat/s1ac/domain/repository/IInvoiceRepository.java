@@ -1,17 +1,17 @@
 package com.pat.s1ac.domain.repository;
 
-import com.pat.s1ac.application.entity.AuditEntity;
-import com.pat.s1ac.application.entity.InvoiceEntity;
-import com.pat.s1ac.application.entity.InvoiceItemEntity;
-import com.pat.s1ac.application.entity.InvoicePaymentDetailEntity;
+import com.pat.s1ac.domain.model.Invoice;
+import com.pat.s1ac.domain.model.InvoiceItem;
+import com.pat.s1ac.domain.model.InvoicePaymentDetail;
+import com.pat.s1ac.domain.model.util.Audit;
 
 import java.util.List;
 
 public interface IInvoiceRepository {
-    boolean create(AuditEntity audit, InvoiceEntity invoice, List<InvoiceItemEntity> items, InvoicePaymentDetailEntity paymentDetail);
-    List<InvoiceEntity> fetch();
-    boolean update(InvoiceEntity invoiceEntity);
-    InvoiceEntity fetchById(String invoiceId);
+    boolean create(Audit audit, Invoice invoice, List<InvoiceItem> items, InvoicePaymentDetail paymentDetail);
+    List<Invoice> fetch();
+    boolean update(Audit audit, Invoice invoice, List<InvoiceItem> items, InvoicePaymentDetail paymentDetail);
+    Invoice fetchById(String invoiceId);
     boolean exists(String identifier);
     boolean existsPaymentMethodEnum(Integer paymentMethodEnum);
     boolean existsMoneyCurrencyEnum(Integer moneyCurrencyEnum);
