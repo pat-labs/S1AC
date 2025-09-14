@@ -7,23 +7,13 @@ public class DomainExceptionCauses {
     }
 
     public static String requiredField(String fieldName) {
-        String PATTERN = "Field %s is required.";
+        String PATTERN = "Field %s cannot be null or blank";
         return String.format(PATTERN, fieldName);
     }
 
     public static String invalidDatetimeFormat(String fieldName) {
         String PATTERN = "Field %s not have the valid format, the format required is %s";
-        return String.format(PATTERN, fieldName, DatetimeHandler.getDatetimeFormat());
-    }
-
-    public static String invalidURL(String fieldValue) {
-        String PATTERN = "The URL could not be acceded %s";
-        return String.format(PATTERN, fieldValue);
-    }
-
-    public static String mustBeMoreThanZero(double fieldValue) {
-        String PATTERN = "Number must be greater than 0, current value: %s";
-        return String.format(PATTERN, fieldValue);
+        return String.format(PATTERN, fieldName, DatetimeHandler.datetimeFormat);
     }
 
     public static String invalidUTF8String(String fieldValue) {
@@ -34,5 +24,15 @@ public class DomainExceptionCauses {
     public static String invalidStringLength(String fieldValue, int maxLength) {
         String PATTERN = "Field %s length exceeds the maximum limit(%s).";
         return String.format(PATTERN, fieldValue, maxLength);
+    }
+
+    public static String resourceNotFound(String identifier) {
+        String PATTERN = "Resource not found for identifier: %s";
+        return String.format(PATTERN, identifier);
+    }
+
+    public static String illegalArgument(String fieldValue) {
+        String PATTERN = "Invalid argument:  %s";
+        return String.format(PATTERN, fieldValue);
     }
 }

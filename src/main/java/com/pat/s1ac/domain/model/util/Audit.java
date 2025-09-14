@@ -1,10 +1,31 @@
 package com.pat.s1ac.domain.model.util;
 
+import com.pat.s1ac.domain.prototype.IAudit;
+import com.pat.s1ac.domain.shared.error.DomainExceptionCauses;
+import com.pat.s1ac.domain.shared.util.DatetimeHandler;
+import com.pat.s1ac.domain.shared.util.StringHandler;
+
 public record Audit(
-        String create_uid,
-        String create_at,
         String write_uid,
         String write_at,
-        boolean is_activate
-) {
+        String create_uid,
+        String create_at
+) implements IAudit {
+
+    public static Audit create(String userId) {
+        if (StringHandler.isNullOrEmpty(userId)) {
+            throw new IllegalArgumentException(DomainExceptionCauses.requiredField("write_uid"));
+        }
+
+        String now = DatetimeHandler.now();
+        return new Audit(userId, now, userId, now);
+    }
+
+    public static Audit update(String userId, Audit oldAudit) {
+        if (StringHandler.isNullOrEmpty(userId)) {
+            throw new IllegalArgumentException(DomainExceptionCauses.requiredField("write_uid"));
+        }
+        String now = DatetimeHandler.now();
+        return new Audit(userId, now, oldAudit.create_uid(), oldAudit.create_at());
+    }
 }

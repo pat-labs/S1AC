@@ -1,49 +1,41 @@
 package com.pat.s1ac.infrastructure.myrabbitmq;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
-@Configuration
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 public class MyRabbitmq {
-    public static final String QUEUE_NAME = "myQueue";
-    public static final String EXCHANGE_NAME = "myTopicExchange";
-    public static final String ROUTING_KEY = "myRoutingKey.#";
 
-    @Bean
-    public Queue createQueue() {
-        return new Queue(QUEUE_NAME, false);
+    private Connection connection;
+    private Channel channel;
+
+    public MyRabbitmq(RabbitMQConfig rabbitMQConfig) throws IOException, TimeoutException {
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost(rabbitMQConfig.host());
+        factory.setPort(Integer.parseInt(rabbitMQConfig.port()));
+        factory.setUsername(rabbitMQConfig.user());
+        factory.setPassword(rabbitMQConfig.password());
+
+        this.connection = factory.newConnection();
+        this.channel = connection.createChannel();
     }
 
-    @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+    public void sendMessage(String queueName, String message) throws IOException {
+        // Declare the queue to be idempotent. This is good practice in case the
+        // consumer hasn't started up yet.
+        channel.queueDeclare(queueName, true, false, false, null);
+        channel.basicPublish("", queueName, null, message.getBytes());
     }
 
-    @Bean
-    public Binding binding(Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with(ROUTING_KEY);
-    }
-
-    @Bean
-    public MessageListenerAdapter listenerAdapter(RabbitmqReceiver receiver) {
-        // Specify the method to call on the receiver (e.g., "receiveMessage")
-        return new MessageListenerAdapter(receiver, "receiveMessage");
-    }
-
-    @Bean
-    public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-                                                    MessageListenerAdapter listenerAdapter) {
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-        container.setConnectionFactory(connectionFactory);
-        container.setQueueNames(QUEUE_NAME);
-        container.setMessageListener(listenerAdapter);
-        return container;
+    public void close() throws IOException, TimeoutException {
+        if (channel != null && channel.isOpen()) {
+            channel.close();
+        }
+        if (connection != null && connection.isOpen()) {
+            connection.close();
+        }
     }
 }

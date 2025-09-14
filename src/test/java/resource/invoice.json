@@ -1,27 +1,8 @@
 {
-  "sucursal": "PAUCARPATA",
-  "company_name": "GRIFO J.H.P F.I.R.LTDA.",
-  "address": "AV. AVIACION NRO. 9 (CARRETERA A YURA) CERRO COLORADO - AREQUIPA URB. INDUSTRIAL CAYRO MZ D LOTE 3",
-  "ruc": "20370508659",
-  "ticket_number": "B006-0067784",
+  "invoice_id": "B001-0000001",
+  "invoice_document_type_enum": 0,
   "issue_date": "25/07/2025",
   "issue_time": "20:19:32",
-  "client_name": "FUENTES CARPIO PATRICK ALONSO",
-  "dni": "72539151",
-  "payment_method": "CONTADO",
-  "items": [
-    {
-      "description": "GASOHOL PREMIU",
-      "quantity": 6.142,
-      "unit_price": 14.78,
-      "total_price": 90.78
-    }
-  ],
-  "subtotal": 76.93,
-  "igv_percentage": 18.00,
-  "igv_amount": 13.85,
-  "total": 90.78,
-  "payment_amount": 90.78,
-  "seller": "VENTAS",
-  "document_type": "BOLETA DE VENTA ELECTRONICA"
+  "company_branch_id": "202507252019",
+  "person_id": "72539751"
 }
