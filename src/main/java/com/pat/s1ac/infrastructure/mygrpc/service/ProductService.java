@@ -7,7 +7,7 @@ public class ProductService implements IProductService {
         return true;
     }
 
-    public boolean existsUnitEnum(Integer productUnitEnumValue) {
+    public boolean existsProductUnitEnum(Integer productUnitEnumValue) {
         return true;
     }
 

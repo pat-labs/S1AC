@@ -1,9 +1,9 @@
 package com.pat.s1ac.domain.validator;
 
 import com.pat.s1ac.domain.model.util.Audit;
-import com.pat.s1ac.domain.shared.error.DomainExceptionCauses;
-import com.pat.s1ac.domain.shared.util.DatetimeHandler;
-import com.pat.s1ac.domain.shared.util.IdHandler;
+import com.pat.s1ac.domain.error.DomainExceptionCauses;
+import com.pat.s1ac.domain.validator.util.DatetimeHandler;
+import com.pat.s1ac.domain.validator.util.IdHandler;
 
 import java.util.List;
 import java.util.function.Function;
@@ -24,10 +24,10 @@ public class AuditValidator extends AbstractValidator<Audit> {
     protected List<Function<Audit, String>> fullValidations() {
         return List.of(
                 audit -> validatePersonId(audit.write_uid()),
-                audit -> !DatetimeHandler.isValidDatetime(audit.write_at())
+                audit -> !DatetimeHandler.isNotValidDatetime(audit.write_at())
                         ? DomainExceptionCauses.invalidDatetimeFormat("write_at") : null,
                 audit -> validatePersonId(audit.create_uid()),
-                audit -> !DatetimeHandler.isValidDatetime(audit.create_at())
+                audit -> !DatetimeHandler.isNotValidDatetime(audit.create_at())
                         ? DomainExceptionCauses.invalidDatetimeFormat("create_at") : null
         );
     }
@@ -35,11 +35,11 @@ public class AuditValidator extends AbstractValidator<Audit> {
     @Override
     protected List<Function<Audit, String>> partialValidations() {
         return List.of(
-                audit -> audit.write_uid() != null ? validatePersonId(audit.write_uid()) : null,
-                audit -> audit.write_at() != null && !DatetimeHandler.isValidDatetime(audit.write_at())
+                audit -> validatePersonId(audit.write_uid()),
+                audit -> audit.write_at() != null && !DatetimeHandler.isNotValidDatetime(audit.write_at())
                         ? DomainExceptionCauses.invalidDatetimeFormat("write_at") : null,
                 audit -> audit.create_uid() != null ? validatePersonId(audit.create_uid()) : null,
-                audit -> audit.create_at() != null && !DatetimeHandler.isValidDatetime(audit.create_at())
+                audit -> audit.create_at() != null && !DatetimeHandler.isNotValidDatetime(audit.create_at())
                         ? DomainExceptionCauses.invalidDatetimeFormat("create_at") : null
         );
     }

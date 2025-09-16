@@ -1,11 +1,12 @@
 package com.pat.s1ac.domain.validator;
 
 import com.pat.s1ac.domain.model.InvoiceItem;
-import com.pat.s1ac.domain.shared.error.DomainExceptionCauses;
-import com.pat.s1ac.domain.shared.util.EnumHandler;
-import com.pat.s1ac.domain.shared.util.IdHandler;
-import com.pat.s1ac.domain.shared.util.IntegerHandler;
-import com.pat.s1ac.domain.shared.util.StringHandler;
+import com.pat.s1ac.domain.error.DomainExceptionCauses;
+import com.pat.s1ac.domain.third_party.IProductService;
+import com.pat.s1ac.domain.validator.util.EnumHandler;
+import com.pat.s1ac.domain.validator.util.IdHandler;
+import com.pat.s1ac.domain.validator.util.IntegerHandler;
+import com.pat.s1ac.domain.validator.util.StringHandler;
 
 import java.util.List;
 import java.util.function.Function;
@@ -13,20 +14,24 @@ import java.util.function.Predicate;
 
 public class InvoiceItemValidator extends AbstractValidator<InvoiceItem> {
 
-    private final Predicate<String> productExists;
-    private final Predicate<Integer> productUnitEnumExists;
+    private final IProductService productService;
 
-    public InvoiceItemValidator(Predicate<String> productExists, Predicate<Integer> productUnitEnumExists) {
-        this.productExists = productExists;
-        this.productUnitEnumExists = productUnitEnumExists;
+    public InvoiceItemValidator(IProductService productService) {
+        this.productService = productService;
     }
 
     public String validateProductId(String productId) {
-        return IdHandler.validateId(productExists, "Product Id", productId);
+        if(!productService.exists(productId)){
+            DomainExceptionCauses.resourceNotFound("product_id");
+        }
+        return null;
     }
 
     public String validateProductUnitEnum(Integer productUnitEnumValue) {
-        return EnumHandler.validateEnum(productUnitEnumExists, "Product Unit Enum", productUnitEnumValue);
+        if(!productService.existsProductUnitEnum(productUnitEnumValue)){
+            DomainExceptionCauses.resourceNotFound("product_unit_enum_value");
+        }
+        return null;
     }
 
     public String validateDescription(String description) {
@@ -34,14 +39,14 @@ public class InvoiceItemValidator extends AbstractValidator<InvoiceItem> {
     }
 
     public String validateQuantity(Double quantity) {
-        if (quantity == null || !IntegerHandler.isGreaterThanZero(quantity)) {
+        if (quantity == null || !IntegerHandler.isNotGreaterThanZero(quantity)) {
             return DomainExceptionCauses.illegalArgument("Quantity");
         }
         return null;
     }
 
     public String validatePrice(Double price) {
-        if (price == null || !IntegerHandler.isGreaterThanZero(price)) {
+        if (price == null || !IntegerHandler.isNotGreaterThanZero(price)) {
             return DomainExceptionCauses.illegalArgument("Price");
         }
         return null;

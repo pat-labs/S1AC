@@ -1,6 +1,5 @@
 package com.pat.s1ac.domain.model;
 
-import com.pat.s1ac.domain.model.util.Money;
 import com.pat.s1ac.domain.prototype.IInvoiceItem;
 
 public record InvoiceItem(

@@ -15,10 +15,10 @@ public class InvoiceRabbitMQ implements IBrokerProducer {
     }
 
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(String message) throws RuntimeException {
         try {
             myRabbitmq.sendMessage(queue, message);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(RabbitmqExceptionCauses.sendError(), e);
         }
     }

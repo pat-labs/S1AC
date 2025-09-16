@@ -1,29 +1,22 @@
 package com.pat.s1ac.domain.shared.util;
 
-import lombok.Getter;
+import com.pat.s1ac.domain.shared.constant.Constant;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 public class DatetimeHandler {
-    public static final String dateFormat = "yyyy-MM-dd";
-    public static final String timeFormat = "HH:mm";
-    public static final String datetimeFormat = dateFormat + " " + timeFormat;
+
+    private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern(Constant.DATETIME_FORMAT);
 
     public static String now() {
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter datetimeFormatter = DateTimeFormatter.ofPattern(datetimeFormat);
-
-        return now.format(datetimeFormatter);
+        return LocalDateTime.now().format(DATETIME_FORMATTER);
     }
 
     public static boolean isValidDatetime(String datetime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datetimeFormat);
-
         try {
-            LocalDateTime.parse(datetime, formatter);
+            LocalDateTime.parse(datetime, DATETIME_FORMATTER);
             return true;
         } catch (DateTimeParseException e) {
             return false;

@@ -4,12 +4,17 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class MyMongo {
+    private static final Logger LOGGER = Logger.getLogger(MyMongo.class.getName());
     private final MongoClient mongoClient;
     private final MongoDatabase database;
 
     public MyMongo(MongoConfig config) {
         String uri = createMongoUri(config);
+        LOGGER.log(Level.INFO, "Connecting to MongoDB with URI: {0}", uri);
         this.mongoClient = MongoClients.create(uri);
         this.database = mongoClient.getDatabase(config.database());
     }

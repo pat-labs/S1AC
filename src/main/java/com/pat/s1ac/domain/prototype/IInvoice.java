@@ -7,11 +7,12 @@ import java.util.List;
 
 public interface IInvoice {
     String invoice_id();
-    Integer document_type_enum();
+
+    Integer invoice_document_type_enum();
+
     String issue_at();
-    String company_id();
+
+    String company_branch_id();
+
     String person_id();
-    List<String> invoice_items_id();
-    InvoicePaymentDetail payment_details();
-    Audit audit();
 }
