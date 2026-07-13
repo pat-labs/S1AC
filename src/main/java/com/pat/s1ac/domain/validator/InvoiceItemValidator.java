@@ -1,16 +1,13 @@
 package com.pat.s1ac.domain.validator;
 
-import com.pat.s1ac.domain.model.InvoiceItem;
 import com.pat.s1ac.domain.error.DomainExceptionCauses;
+import com.pat.s1ac.domain.model.InvoiceItem;
 import com.pat.s1ac.domain.third_party.IProductService;
-import com.pat.s1ac.domain.validator.util.EnumHandler;
-import com.pat.s1ac.domain.validator.util.IdHandler;
-import com.pat.s1ac.domain.validator.util.IntegerHandler;
-import com.pat.s1ac.domain.validator.util.StringHandler;
+import com.pat.s1ac.domain.util.IntegerHandler;
+import com.pat.s1ac.domain.util.StringHandler;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class InvoiceItemValidator extends AbstractValidator<InvoiceItem> {
 
@@ -21,17 +18,11 @@ public class InvoiceItemValidator extends AbstractValidator<InvoiceItem> {
     }
 
     public String validateProductId(String productId) {
-        if(!productService.exists(productId)){
-            DomainExceptionCauses.resourceNotFound("product_id");
-        }
-        return null;
+        return productService.exists(productId) ? null : DomainExceptionCauses.resourceNotFound("product_id");
     }
 
     public String validateProductUnitEnum(Integer productUnitEnumValue) {
-        if(!productService.existsProductUnitEnum(productUnitEnumValue)){
-            DomainExceptionCauses.resourceNotFound("product_unit_enum_value");
-        }
-        return null;
+        return productService.existsProductUnitEnum(productUnitEnumValue) ? null : DomainExceptionCauses.resourceNotFound("product_unit_enum_value");
     }
 
     public String validateDescription(String description) {

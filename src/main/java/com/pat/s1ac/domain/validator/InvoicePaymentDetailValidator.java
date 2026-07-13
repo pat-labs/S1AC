@@ -1,36 +1,30 @@
 package com.pat.s1ac.domain.validator;
 
-import com.pat.s1ac.domain.model.InvoicePaymentDetail;
 import com.pat.s1ac.domain.error.DomainExceptionCauses;
-import com.pat.s1ac.domain.validator.util.EnumHandler;
-import com.pat.s1ac.domain.validator.util.IntegerHandler;
+import com.pat.s1ac.domain.model.InvoicePaymentDetail;
+import com.pat.s1ac.domain.repository.IInvoiceRepositoryRead;
+import com.pat.s1ac.domain.util.IntegerHandler;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class InvoicePaymentDetailValidator extends AbstractValidator<InvoicePaymentDetail> {
-    private final Predicate<Integer> paymentMethodEnumExists;
-    private final Predicate<Integer> moneyCurrencyEnumExists;
+    private final IInvoiceRepositoryRead invoiceRepositoryRead;
 
-    public InvoicePaymentDetailValidator(Predicate<Integer> paymentMethodEnumExists, Predicate<Integer> moneyCurrencyEnumExists) {
-        this.paymentMethodEnumExists = paymentMethodEnumExists;
-        this.moneyCurrencyEnumExists = moneyCurrencyEnumExists;
+    public InvoicePaymentDetailValidator(IInvoiceRepositoryRead invoiceRepositoryRead) {
+        this.invoiceRepositoryRead = invoiceRepositoryRead;
     }
 
     public String validatePaymentMethodEnum(Integer paymentMethodEnum) {
-        return EnumHandler.validateEnum(paymentMethodEnumExists, "Payment Method Enum", paymentMethodEnum);
+        return invoiceRepositoryRead.existsPaymentMethodEnum(paymentMethodEnum) ? null : DomainExceptionCauses.resourceNotFound("payment_method_enum");
     }
 
     public String validateMoneyCurrencyEnum(Integer moneyCurrencyEnum) {
-        return EnumHandler.validateEnum(moneyCurrencyEnumExists, "Money Currency Enum", moneyCurrencyEnum);
+        return invoiceRepositoryRead.existsMoneyCurrencyEnum(moneyCurrencyEnum) ? null : DomainExceptionCauses.resourceNotFound("money_currency_enum");
     }
 
     public String validateMoney(String fieldName, Double amount) {
-        if (!IntegerHandler.isNotGreaterThanZero(amount)) {
-            return DomainExceptionCauses.illegalArgument(fieldName);
-        }
-        return null;
+        return !IntegerHandler.isNotGreaterThanZero(amount) ? null : DomainExceptionCauses.resourceNotFound(fieldName);
     }
 
     @Override

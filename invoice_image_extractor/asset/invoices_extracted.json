@@ -1,0 +1,31 @@
+{
+  "./asset/invoice.jpeg": {
+    "invoiceNumber": "4625",
+    "invoiceDate": "2023-07-15",
+    "dueDate": null,
+    "totalAmount": 119.97,
+    "currency": "AR",
+    "vendorName": "جمعية التدريب العامة للقطاني الشعبي",
+    "customerName": null,
+    "lineItems": [
+      {
+        "description": "وضع عرفة",
+        "quantity": 1,
+        "unitPrice": 200.0,
+        "total": 200.0
+      },
+      {
+        "description": "وضع شيء اخرى لغير متباعة",
+        "quantity": 1,
+        "unitPrice": 149.97,
+        "total": 149.97
+      },
+      {
+        "description": null,
+        "quantity": null,
+        "unitPrice": 0,
+        "total": 69.98
+      }
+    ]
+  }
+}

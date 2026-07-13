@@ -4,8 +4,6 @@ import com.pat.s1ac.domain.broker.IBrokerProducer;
 import com.pat.s1ac.infrastructure.myrabbitmq.MyRabbitmq;
 import com.pat.s1ac.infrastructure.myrabbitmq.error.RabbitmqExceptionCauses;
 
-import java.io.IOException;
-
 public class InvoiceRabbitMQ implements IBrokerProducer {
     private static final String queue = "invoice";
     private final MyRabbitmq myRabbitmq;

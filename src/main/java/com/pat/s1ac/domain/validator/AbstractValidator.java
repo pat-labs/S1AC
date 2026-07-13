@@ -6,26 +6,27 @@ import java.util.function.Function;
 
 public abstract class AbstractValidator<T> {
 
-    public void isValid(T model) throws IllegalArgumentException {
-        runValidations(model, fullValidations());
+    public String isValid(T model) {
+        return runValidations(model, fullValidations());
     }
 
-    public void isPartialValid(T model) throws IllegalArgumentException {
-        runValidations(model, partialValidations());
+    public String isPartialValid(T model) {
+        return runValidations(model, partialValidations());
     }
 
     protected abstract List<Function<T, String>> fullValidations();
 
     protected abstract List<Function<T, String>> partialValidations();
 
-    protected void runValidations(T model, List<Function<T, String>> rules) {
+    protected String runValidations(T model, List<Function<T, String>> rules) {
         List<String> errors = rules.stream()
                 .map(rule -> rule.apply(model))
                 .filter(Objects::nonNull)
                 .toList();
 
         if (!errors.isEmpty()) {
-            throw new IllegalArgumentException(String.join(", ", errors));
+            return String.join(", ", errors);
         }
+        return null;
     }
 }

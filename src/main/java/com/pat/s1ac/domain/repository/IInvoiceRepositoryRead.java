@@ -1,19 +1,20 @@
 package com.pat.s1ac.domain.repository;
 
 import com.pat.s1ac.domain.model.Invoice;
+import com.pat.s1ac.domain.model.util.Response;
 
 import java.util.List;
 
 public interface IInvoiceRepositoryRead {
-    List<Invoice> fetch();
+    Response<List<Invoice>> fetch(int offset, int limit);
 
-    Invoice fetchById(String invoiceId);
+    Response<Invoice> fetchById(String invoiceId);
 
-    boolean exists(String identifier);
+    Response<Boolean> exists(String identifier);
 
-    boolean existsPaymentMethodEnum(Integer paymentMethodEnum);
+    Response<Boolean> existsPaymentMethodEnum(Integer paymentMethodEnum);
 
-    boolean existsMoneyCurrencyEnum(Integer moneyCurrencyEnum);
+    Response<Boolean> existsMoneyCurrencyEnum(Integer moneyCurrencyEnum);
 
-    boolean existsInvoiceDocumentTypeEnum(Integer invoiceDocumentTypeEnum);
+    Response<Boolean> existsInvoiceDocumentTypeEnum(Integer invoiceDocumentTypeEnum);
 }

@@ -3,8 +3,10 @@ package com.pat.s1ac.domain.repository;
 import com.pat.s1ac.domain.model.Invoice;
 import com.pat.s1ac.domain.model.util.Audit;
 
-public interface IInvoiceRepositoryWrite {
-    boolean create(Audit audit, Invoice invoice);
+import java.util.List;
 
-//    boolean update(Audit audit, Invoice invoice, List<InvoiceItem> items, InvoicePaymentDetail paymentDetail);
+public interface IInvoiceRepositoryWrite {
+    String delete(String writeUId, String invoiceId);
+    String create(Audit audit, Invoice invoice);
+    String update(Audit audit, Invoice invoice);
 }

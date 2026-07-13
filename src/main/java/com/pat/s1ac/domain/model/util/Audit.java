@@ -1,9 +1,9 @@
 package com.pat.s1ac.domain.model.util;
 
-import com.pat.s1ac.domain.prototype.IAudit;
 import com.pat.s1ac.domain.error.DomainExceptionCauses;
-import com.pat.s1ac.domain.validator.util.DatetimeHandler;
-import com.pat.s1ac.domain.validator.util.StringHandler;
+import com.pat.s1ac.domain.prototype.IAudit;
+import com.pat.s1ac.domain.util.DatetimeHandler;
+import com.pat.s1ac.domain.util.StringHandler;
 
 public record Audit(
         String write_uid,

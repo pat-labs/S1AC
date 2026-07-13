@@ -1,6 +1,7 @@
 package com.pat.s1ac.domain.error;
 
-import com.pat.s1ac.domain.validator.util.DatetimeHandler;
+
+import static com.pat.s1ac.infrastructure.bootstrap.Constant.DATETIME_FORMAT;
 
 public class DomainExceptionCauses {
     public DomainExceptionCauses() {
@@ -13,7 +14,7 @@ public class DomainExceptionCauses {
 
     public static String invalidDatetimeFormat(String fieldName) {
         String PATTERN = "Field %s not have the valid format, the format required is %s";
-        return String.format(PATTERN, fieldName, DatetimeHandler.datetimeFormat);
+        return String.format(PATTERN, fieldName, DATETIME_FORMAT);
     }
 
     public static String invalidUTF8String(String fieldValue) {

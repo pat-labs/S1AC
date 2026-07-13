@@ -1,47 +1,41 @@
 package com.pat.s1ac.domain.validator;
 
-import com.pat.s1ac.domain.model.Invoice;
 import com.pat.s1ac.domain.error.DomainExceptionCauses;
+import com.pat.s1ac.domain.model.Invoice;
+import com.pat.s1ac.domain.model.util.Response;
 import com.pat.s1ac.domain.repository.IInvoiceRepositoryRead;
 import com.pat.s1ac.domain.third_party.ICompanyService;
 import com.pat.s1ac.domain.third_party.IPersonService;
-import com.pat.s1ac.domain.validator.util.DatetimeHandler;
-import com.pat.s1ac.domain.validator.util.EnumHandler;
-import com.pat.s1ac.domain.validator.util.IdHandler;
+import com.pat.s1ac.domain.util.DatetimeHandler;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class InvoiceValidator extends AbstractValidator<Invoice> {
     private final IInvoiceRepositoryRead invoiceRepositoryRead;
     private final ICompanyService companyService;
     private final IPersonService personService;
 
-    public InvoiceValidator(
-            Predicate<Integer> invoiceRepositoryRead,
-            Predicate<String> companyService,
-            Predicate<String> personService) {
-
+    public InvoiceValidator(IInvoiceRepositoryRead invoiceRepositoryRead, ICompanyService companyService, IPersonService personService) {
         this.invoiceRepositoryRead = invoiceRepositoryRead;
         this.companyService = companyService;
         this.personService = personService;
     }
 
-    public boolean validateInvoiceId(String invoiceId) {
-        return true;
+    public Response<Boolean> isValidId(String invoiceId) {
+        return invoiceRepositoryRead.exists(invoiceId);
     }
 
-    public String validateDocumentTypeEnum(Integer documentTypeEnumValue) {
-        return EnumHandler.validateEnum(invoiceRepositoryRead, "Document Type Enum", documentTypeEnumValue);
+    public Response<Boolean> validateDocumentTypeEnum(Integer documentTypeEnumValue) {
+        return invoiceRepositoryRead.existsInvoiceDocumentTypeEnum(documentTypeEnumValue);
     }
 
-    public String validateCompanyId(String companyId) {
-        return IdHandler.validateId(companyService, "Company Id", companyId);
+    public Response<Boolean> validateCompanyId(String companyId) {
+        return companyService.exists(companyId);
     }
 
-    public String validatePersonId(String personId) {
-        return IdHandler.validateId(personService, "Person Id", personId);
+    public Response<Boolean> validatePersonId(String personId) {
+        return personService.exists(personId);
     }
 
     @Override

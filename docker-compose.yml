@@ -27,6 +27,20 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
+    # Mongo Express Web UI
+  mongo_express:
+    container_name: mongo_express
+    image: mongo-express:latest
+    restart: always
+    ports:
+      - "8081:8081" # Mongo Express UI
+    environment:
+      ME_CONFIG_MONGODB_AUTH_USERNAME: ${MONGO_USER}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_SERVER: mongo_db
+    depends_on:
+      - mongo_db
+
 
 volumes:
   mongo_data:

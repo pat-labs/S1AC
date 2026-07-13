@@ -1,9 +1,13 @@
 package com.pat.s1ac.infrastructure.mymongo;
 
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ConnectionPoolSettings;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,7 +19,25 @@ public class MyMongo {
     public MyMongo(MongoConfig config) {
         String uri = createMongoUri(config);
         LOGGER.log(Level.INFO, "Connecting to MongoDB with URI: {0}", uri);
-        this.mongoClient = MongoClients.create(uri);
+
+        ConnectionString connectionString = new ConnectionString(uri);
+
+        ConnectionPoolSettings poolSettings = ConnectionPoolSettings.builder()
+                .maxSize(50) // max pooled connections
+                .minSize(5)  // keep warm connections
+                .maxWaitTime(2, TimeUnit.SECONDS) // wait for a connection
+                .maxConnectionIdleTime(60, TimeUnit.SECONDS) // idle timeout
+                .build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(connectionString)
+                .applyToConnectionPoolSettings(builder -> builder.applySettings(poolSettings))
+                .applyToSocketSettings(builder -> builder
+                        .connectTimeout(3, TimeUnit.SECONDS)
+                        .readTimeout(5, TimeUnit.SECONDS))
+                .build();
+
+        this.mongoClient = MongoClients.create(settings);
         this.database = mongoClient.getDatabase(config.database());
     }
 
@@ -34,12 +56,9 @@ public class MyMongo {
         return database;
     }
 
-    public MongoClient getMongoClient() {
-        return mongoClient;
-    }
-
     public void close() {
         if (mongoClient != null) {
+            LOGGER.info("Closing MongoDB connection...");
             mongoClient.close();
         }
     }

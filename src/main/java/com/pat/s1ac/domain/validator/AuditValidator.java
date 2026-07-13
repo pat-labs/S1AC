@@ -1,33 +1,41 @@
 package com.pat.s1ac.domain.validator;
 
-import com.pat.s1ac.domain.model.util.Audit;
 import com.pat.s1ac.domain.error.DomainExceptionCauses;
-import com.pat.s1ac.domain.validator.util.DatetimeHandler;
-import com.pat.s1ac.domain.validator.util.IdHandler;
+import com.pat.s1ac.domain.model.util.Audit;
+import com.pat.s1ac.domain.model.util.Response;
+import com.pat.s1ac.domain.third_party.IPersonService;
+import com.pat.s1ac.domain.util.DatetimeHandler;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 public class AuditValidator extends AbstractValidator<Audit> {
-    private final Predicate<String> personExists;
+    private final IPersonService personService;
 
-    public AuditValidator(Predicate<String> personExists) {
-        this.personExists = personExists;
+    public AuditValidator(IPersonService personService) {
+        this.personService = personService;
     }
 
-    public String validatePersonId(String personId) {
-        return IdHandler.validateId(personExists, "Person Id", personId);
+    public Response<Boolean> isValidId(String writeUId){
+        return validatePersonId(writeUId);
+    }
+
+    public Response<Boolean> validatePersonId(String personId) {
+        var response = personService.exists(personId);
+        if (response.error() != null){
+            return response.error();
+        }
+        return null;
     }
 
     @Override
     protected List<Function<Audit, String>> fullValidations() {
         return List.of(
                 audit -> validatePersonId(audit.write_uid()),
-                audit -> !DatetimeHandler.isNotValidDatetime(audit.write_at())
+                audit -> DatetimeHandler.isNotValidDatetime(audit.write_at())
                         ? DomainExceptionCauses.invalidDatetimeFormat("write_at") : null,
                 audit -> validatePersonId(audit.create_uid()),
-                audit -> !DatetimeHandler.isNotValidDatetime(audit.create_at())
+                audit -> DatetimeHandler.isNotValidDatetime(audit.create_at())
                         ? DomainExceptionCauses.invalidDatetimeFormat("create_at") : null
         );
     }
